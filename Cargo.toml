@@ -1,6 +1,16 @@
 [package]
 name = "corrode"
 version = "0.1.0"
+description = "Corrode is a terminal based weather app"
+authors = ["Tom Louveau <chewie.louveau@gmail.com>"]
 edition = "2024"
 
 [dependencies]
+color-eyre = "0.6"
+ratatui = "0.30.0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
