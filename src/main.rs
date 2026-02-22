@@ -18,7 +18,6 @@ fn main() -> io::Result<()> {
 
 #[derive(Debug, Default)]
 pub struct App {
-    counter: u8,
     exit: bool,
 }
 
@@ -48,8 +47,6 @@ impl App {
     fn handle_key_event(&mut self, key_event: KeyEvent) {
         match key_event.code {
             KeyCode::Char('q') => self.exit(),
-            KeyCode::Left => self.decrement_counter(),
-            KeyCode::Right => self.increment_counter(),
             _ => {}
         }
     }
@@ -57,24 +54,12 @@ impl App {
     fn exit(&mut self) {
         self.exit = true;
     }
-
-    fn decrement_counter(&mut self) {
-        self.counter -= 1;
-    }
-
-    fn increment_counter(&mut self) {
-        self.counter += 1;
-    }
 }
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let title = Line::from(" Counter App Tutorial ".bold());
+        let title = Line::from(" Corrode weather ".bold());
         let instructions = Line::from(vec![
-            " Decrement ".into(),
-            "<Left>".blue().bold(),
-            " Increment ".into(),
-            "<Right>".blue().bold(),
             " Quit ".into(),
             "<Q>".blue().bold(),
         ]);
@@ -83,12 +68,8 @@ impl Widget for &App {
             .title_bottom(instructions.centered())
             .border_set(border::THICK);
 
-        let counter_text = Text::from(vec![Line::from(vec![
-            "Value: ".into(),
-            self.counter.to_string().yellow(),
-        ])]);
 
-        Paragraph::new(counter_text)
+        Paragraph::new("Bruh")
             .centered()
             .block(block)
             .render(area, buf);
