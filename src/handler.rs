@@ -13,6 +13,12 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App, tx: mpsc::Sender<ap
         KeyCode::Char('k') if ctrl => {
             app.previous();
         }
+        KeyCode::Char('n') if ctrl => {
+            app.next();
+        }
+        KeyCode::Char('p') if ctrl => {
+            app.previous();
+        }
         KeyCode::Char('y') if ctrl => {
             if let Some(city) = app.get_selected_city() {
                 app.input_text = city.name.clone();
