@@ -1,6 +1,8 @@
 use crate::app::{App, AppState};
 use ratatui::{
-    layout::{Constraint, Direction, Layout},
+    layout::{Constraint, Direction, HorizontalAlignment, Layout},
+    style::{Color, Style},
+    text::{Line, Span},
     widgets::{Block, Borders, Paragraph},
     Frame,
 };
@@ -8,7 +10,7 @@ use ratatui::{
 pub fn render(f: &mut Frame, app: &mut App) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
+        .constraints([Constraint::Percentage(30), Constraint::Percentage(70)])
         .split(f.area());
 
     let show_cities = app.input_text.len() >= 1;
@@ -36,31 +38,35 @@ pub fn render(f: &mut Frame, app: &mut App) {
 
     let input = Paragraph::new(input_text)
         .block(input_block)
-        .style(ratatui::style::Style::default().fg(ratatui::style::Color::White));
+        .style(Style::default().fg(Color::Blue));
 
     f.render_widget(input, left_chunks[0]);
 
     if show_cities && city_count > 0 {
-        let mut city_lines = Vec::new();
+        let mut city_lines: Vec<Line> = Vec::new();
         for (i, city) in app.filtered_cities.iter().enumerate() {
             if i == app.selection_index {
-                city_lines.push(format!(">> {}", city.name));
+                city_lines.push(Line::from(vec![
+                    Span::raw("> "),
+                    Span::styled(city.name.clone(), Style::default().bold()),
+                ]));
             } else {
-                city_lines.push(format!("   {}", city.name));
+                city_lines.push(Line::from(format!("  {}", city.name)));
             }
         }
 
         let city_block = Block::default().title(" Cities ").borders(Borders::ALL);
 
-        let city_text = Paragraph::new(city_lines.join("\n"))
+        let city_text = Paragraph::new(city_lines)
             .block(city_block)
-            .style(ratatui::style::Style::default().fg(ratatui::style::Color::Yellow));
+            .style(Style::default().fg(Color::Blue));
 
         f.render_widget(city_text, left_chunks[1]);
     }
 
     let detail_block = Block::default()
-        .title("Current Weather ")
+        .title_alignment(HorizontalAlignment::Center)
+        .title(" Current Weather ")
         .borders(Borders::ALL);
 
     let content = match &app.state {

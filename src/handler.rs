@@ -23,6 +23,7 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App, tx: mpsc::Sender<ap
             if let Some(city) = app.get_selected_city() {
                 app.input_text = city.name.clone();
                 app.filter_cities();
+                app.filtered_cities = vec![];
             }
         }
         KeyCode::Enter => {
