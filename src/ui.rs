@@ -27,7 +27,11 @@ pub fn render(f: &mut Frame, app: &mut App) {
 
     let left_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(3), Constraint::Length(city_block_height)])
+        .constraints([
+            Constraint::Length(3),
+            Constraint::Length(city_block_height),
+            Constraint::Min(0),
+        ])
         .split(chunks[0]);
 
     let input_block = Block::default()
@@ -64,12 +68,7 @@ pub fn render(f: &mut Frame, app: &mut App) {
         f.render_widget(city_text, left_chunks[1]);
     }
 
-    let detail_block = Block::default()
-        .title_alignment(HorizontalAlignment::Center)
-        .title(" Current Weather ")
-        .borders(Borders::ALL);
-
-    let content = match &app.state {
+    let info_content = match &app.state {
         AppState::Loading => Paragraph::new("Loading..."),
         AppState::Error(e) => Paragraph::new(e.clone()),
         AppState::Idle => {
@@ -79,10 +78,24 @@ pub fn render(f: &mut Frame, app: &mut App) {
                     w.current_weather.temperature, w.current_weather.windspeed
                 ))
             } else {
-                Paragraph::new("Select a city and press Enter to load weather")
+                Paragraph::new("Select a city and press Enter\nto load weather")
             }
         }
     };
 
-    f.render_widget(content.block(detail_block), chunks[1]);
+    let info_block = Block::default()
+        .title_alignment(HorizontalAlignment::Center)
+        .title(" Info ")
+        .borders(Borders::ALL);
+
+    f.render_widget(info_content.block(info_block), left_chunks[2]);
+
+    let right_block = Block::default()
+        .title_alignment(HorizontalAlignment::Center)
+        .title(" Weather ")
+        .borders(Borders::ALL);
+
+    let right_content = Paragraph::new("bruh");
+
+    f.render_widget(right_content.block(right_block), chunks[1]);
 }
