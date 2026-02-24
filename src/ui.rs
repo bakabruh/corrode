@@ -1,4 +1,7 @@
-use crate::app::{App, AppState};
+use crate::{
+    app::{App, AppState},
+    braille,
+};
 use ratatui::{
     layout::{Constraint, Direction, HorizontalAlignment, Layout},
     style::{Color, Style},
@@ -105,6 +108,7 @@ pub fn render(f: &mut Frame, app: &mut App) {
                     w.current.surface_pressure,
                     weather_desc
                 ))
+                    .style(Style::default().fg(Color::Green))
             } else {
                 Paragraph::new("Select a city and press Enter\nto load weather")
             }
@@ -123,7 +127,7 @@ pub fn render(f: &mut Frame, app: &mut App) {
         .title(" Weather ")
         .borders(Borders::ALL);
 
-    let right_content = Paragraph::new("bruh");
-
-    f.render_widget(right_content.block(right_block), chunks[1]);
+    let right_inner = right_block.inner(chunks[1]);
+    f.render_widget(right_block, chunks[1]);
+    braille::draw_house(f, right_inner);
 }
