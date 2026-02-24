@@ -7,6 +7,25 @@ use ratatui::{
     Frame,
 };
 
+fn get_weather_description(code: i32) -> &'static str {
+    match code {
+        0 => "Clear sky",
+        1 | 2 | 3 => "Partly cloudy",
+        45 | 48 => "Foggy",
+        51 | 53 | 55 => "Drizzle",
+        56 | 57 => "Freezing drizzle",
+        61 | 63 | 65 => "Rain",
+        66 | 67 => "Freezing rain",
+        71 | 73 | 75 => "Snow",
+        77 => "Snow grains",
+        80 | 81 | 82 => "Rain showers",
+        85 | 86 => "Snow showers",
+        95 => "Thunderstorm",
+        96 | 99 => "Thunderstorm with hail",
+        _ => "Unknown",
+    }
+}
+
 pub fn render(f: &mut Frame, app: &mut App) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
@@ -73,9 +92,18 @@ pub fn render(f: &mut Frame, app: &mut App) {
         AppState::Error(e) => Paragraph::new(e.clone()),
         AppState::Idle => {
             if let Some(w) = &app.weather {
+                let weather_desc = get_weather_description(w.current.weather_code);
                 Paragraph::new(format!(
-                    "Temperature: {}°C\nWind: {} km/h",
-                    w.current_weather.temperature, w.current_weather.windspeed
+                    "Temperature: {:.1}°C\nFeels Like: {:.1}°C\nHumidity: {:.0}%\n\nWind Speed: {:.1} km/h\nWind Direction: {:.0}°\nWind Gusts: {:.1} km/h\n\nPrecipitation: {:.1} mm\nPressure: {:.0} hPa\nCondition: {}",
+                    w.current.temperature_2m,
+                    w.current.apparent_temperature,
+                    w.current.relative_humidity_2m,
+                    w.current.wind_speed_10m,
+                    w.current.wind_direction_10m,
+                    w.current.wind_gusts_10m,
+                    w.current.precipitation,
+                    w.current.surface_pressure,
+                    weather_desc
                 ))
             } else {
                 Paragraph::new("Select a city and press Enter\nto load weather")
