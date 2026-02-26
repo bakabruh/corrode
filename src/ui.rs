@@ -133,5 +133,5 @@ pub fn render(f: &mut Frame, app: &mut App) {
     let sun_x = right_inner.x + right_inner.width - sun_w - 2;
     let sun_y = right_inner.y + 1;
     let sun_area = Rect::new(sun_x, sun_y, sun_w, sun_h);
-    braille::draw_sun(f, sun_area);
+    braille::draw_sun(f, sun_area, app.frame);
 }

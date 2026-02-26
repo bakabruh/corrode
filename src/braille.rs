@@ -156,7 +156,7 @@ pub fn draw_house(frame: &mut Frame, area: Rect) {
     frame.render_widget(canvas, area);
 }
 
-pub fn draw_sun(frame: &mut Frame, area: Rect) {
+pub fn draw_sun(frame: &mut Frame, area: Rect, tick: u64) {
     let canvas = Canvas::default()
         .marker(Marker::Braille)
         .x_bounds([0.0, f64::from(area.width)])
@@ -170,8 +170,10 @@ pub fn draw_sun(frame: &mut Frame, area: Rect) {
             let cx = w - r * aspect - padding;
             let cy = r + padding;
 
+            let rotation = (tick as f64) * 0.05;
+
             for i in 0..8 {
-                let angle = (i as f64 / 8.0) * std::f64::consts::TAU;
+                let angle = (i as f64 / 8.0) * std::f64::consts::TAU + rotation;
                 ctx.draw(&ratatui::widgets::canvas::Line {
                     x1: cx + angle.cos() * r * aspect,
                     y1: cy + angle.sin() * r,
