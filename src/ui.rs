@@ -3,7 +3,7 @@ use crate::{
     braille,
 };
 use ratatui::{
-    layout::{Constraint, Direction, HorizontalAlignment, Layout},
+    layout::{Constraint, Direction, HorizontalAlignment, Layout, Rect},
     style::{Color, Style},
     text::{Line, Span},
     widgets::{Block, Borders, Paragraph},
@@ -115,10 +115,7 @@ pub fn render(f: &mut Frame, app: &mut App) {
         }
     };
 
-    let info_block = Block::default()
-        .title_alignment(HorizontalAlignment::Center)
-        .title(" Info ")
-        .borders(Borders::ALL);
+    let info_block = Block::default().title(" Info ").borders(Borders::ALL);
 
     f.render_widget(info_content.block(info_block), left_chunks[2]);
 
@@ -130,4 +127,11 @@ pub fn render(f: &mut Frame, app: &mut App) {
     let right_inner = right_block.inner(chunks[1]);
     f.render_widget(right_block, chunks[1]);
     braille::draw_house(f, right_inner);
+
+    let sun_w: u16 = 20;
+    let sun_h: u16 = 12;
+    let sun_x = right_inner.x + right_inner.width - sun_w - 2;
+    let sun_y = right_inner.y + 1;
+    let sun_area = Rect::new(sun_x, sun_y, sun_w, sun_h);
+    braille::draw_sun(f, sun_area);
 }

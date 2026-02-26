@@ -155,3 +155,59 @@ pub fn draw_house(frame: &mut Frame, area: Rect) {
 
     frame.render_widget(canvas, area);
 }
+
+pub fn draw_sun(frame: &mut Frame, area: Rect) {
+    let canvas = Canvas::default()
+        .marker(Marker::Braille)
+        .x_bounds([0.0, f64::from(area.width)])
+        .y_bounds([0.0, f64::from(area.height)])
+        .paint(move |ctx| {
+            let w = f64::from(area.width);
+            let h = f64::from(area.height);
+            let r = h.min(w) / 4.0;
+            let padding = 2.0;
+            let aspect = w / h;
+            let cx = w - r * aspect - padding;
+            let cy = r + padding;
+
+            for i in 0..8 {
+                let angle = (i as f64 / 8.0) * std::f64::consts::TAU;
+                ctx.draw(&ratatui::widgets::canvas::Line {
+                    x1: cx + angle.cos() * r * aspect,
+                    y1: cy + angle.sin() * r,
+                    x2: cx + angle.cos() * (r * 1.8) * aspect,
+                    y2: cy + angle.sin() * (r * 1.8),
+                    color: Color::LightYellow,
+                });
+            }
+
+            let points: Vec<(f64, f64)> = (0..64)
+                .map(|i| {
+                    let angle = (i as f64 / 64.0) * std::f64::consts::TAU;
+                    (cx + angle.cos() * r * aspect, cy + angle.sin() * r)
+                })
+                .collect();
+
+            ctx.draw(&ratatui::widgets::canvas::Points {
+                coords: &points,
+                color: Color::Yellow,
+            });
+
+            let inner_points: Vec<(f64, f64)> = (0..32)
+                .map(|i| {
+                    let angle = (i as f64 / 32.0) * std::f64::consts::TAU;
+                    (
+                        cx + angle.cos() * r * 0.5 * aspect,
+                        cy + angle.sin() * r * 0.5,
+                    )
+                })
+                .collect();
+
+            ctx.draw(&ratatui::widgets::canvas::Points {
+                coords: &inner_points,
+                color: Color::LightYellow,
+            });
+        });
+
+    frame.render_widget(canvas, area);
+}

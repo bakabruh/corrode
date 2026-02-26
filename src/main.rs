@@ -16,6 +16,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let (tx, mut rx) = mpsc::channel(10);
 
         loop {
+            app.frame += 1;
             terminal.draw(|f| ui::render(f, &mut app))?;
 
             if let Ok(data) = rx.try_recv() {

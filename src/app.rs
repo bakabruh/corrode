@@ -20,6 +20,7 @@ pub struct App {
     pub input_text: String,
     pub weather: Option<WeatherResponse>,
     pub state: AppState,
+    pub frame: u64,
 }
 
 impl App {
@@ -159,6 +160,7 @@ impl App {
             input_text: String::new(),
             weather: None,
             state: AppState::Idle,
+            frame: 0,
         }
     }
 
